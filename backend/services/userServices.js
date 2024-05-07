@@ -1,6 +1,23 @@
 const { verifyPassword } = require("../helpers/passwords");
 const { generateToken } = require("../helpers/tokens");
 const { users } = require("../models/userModel");
+const { ObjectId } = require("mongodb");
+
+const findUserById = async (id) => {
+  try {
+    const findUser = await users.findById(new ObjectId(id), {
+      email: 0,
+      password: 0,
+    });
+    if (findUser !== null) {
+      return { status: true, data: findUser };
+    } else {
+      return { status: false, message: "User does not exists!" };
+    }
+  } catch (error) {
+    return { status: false, message: error.message };
+  }
+};
 
 const findUser = async (email) => {
   try {
@@ -11,7 +28,7 @@ const findUser = async (email) => {
       return { status: false };
     }
   } catch (error) {
-    return false;
+    return { status: false, message: error.message };
   }
 };
 
@@ -47,4 +64,4 @@ const validateLogin = async (req, res) => {
   }
 };
 
-module.exports = { registerNewUser, findUser, validateLogin };
+module.exports = { registerNewUser, findUser, validateLogin, findUserById };

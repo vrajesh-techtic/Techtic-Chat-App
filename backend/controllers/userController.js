@@ -1,9 +1,11 @@
+const { users } = require("../models/userModel");
 const {
   registerNewUser,
   findUser,
   validateLogin,
-} = require("../services/signup");
+} = require("../services/userServices");
 
+// function to create new user
 const createUser = async (req, res) => {
   const isUser = await findUser(req.body.email);
   if (isUser.status) {
@@ -13,6 +15,7 @@ const createUser = async (req, res) => {
   }
 };
 
+// function to login existing user
 const loginUser = async (req, res) => {
   const isUser = await findUser(req.body.email);
   if (isUser.status) {
@@ -22,4 +25,16 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, loginUser };
+const updateUser = async (req, res) => {
+  const userId = req.headers.userId;
+
+  try {
+    const updateQuery = await users.findByIdAndUpdate(userId, req.body);
+
+    res.send({ status: true, message: "Profile updated successfully!" });
+  } catch (error) {
+    res.send({ status: false, message: error.message });
+  }
+};
+
+module.exports = { createUser, loginUser, updateUser };

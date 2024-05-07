@@ -61,7 +61,6 @@ const userSchema = new Schema(
 
 userSchema.pre("save", async function (next) {
   this.password = await createHashPassword(this.password);
-
   next();
 });
 
