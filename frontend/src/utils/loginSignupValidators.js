@@ -56,12 +56,13 @@ export const customSignupValidations = Yup.object({
     .required("Confirm Password is required")
     .test(
       "no-spaces",
-      "Confirm Password should not contain only spaces",
+      "Confirm Password should not contain spaces",
       (value) => !/^\s+$/.test(value)
     ),
-    phonenum: Yup.string()
-      .required("Name is required*")
+    phoneNumber: Yup.string()
+      .required("Phone number is required*")
       .min(10)
+      .max(10)
       .test(
         "no-spaces",
         "Phone number should not contain spaces",
@@ -69,5 +70,5 @@ export const customSignupValidations = Yup.object({
       ),
       gender: Yup.string().required("Gender is required"),
       dob: Yup.date().required("Date of birth is required"),
-      countryCode:""
+      countryCode: Yup.string().required("Please select country code"),
 });

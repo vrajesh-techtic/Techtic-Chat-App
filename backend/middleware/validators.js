@@ -141,28 +141,28 @@ const updateValidations = (req, res, next) => {
     name: joi
       .string()
       .pattern(/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/)
-      .messages({
+      .messages({                                                                                                                     
         "string.pattern.base": "Name must be alphabets only! ",
       }),
     countryCode: joi.string(),
     phoneNumber: joi.string().min(10).max(10).messages({
       "string.min": "Please enter 10 digit phone number",
-      "string.max": "Please enter 10 digit phone number",
+      "string.max": "Please enter 10 digit phone number",                                                                                                                                                                                                                                                                                                                                                                                                                       
     }),
     gender: joi.string(),
     dob: joi.date().iso().max(moment.utc().format("YYYY-MM-DD")).messages({
       "date.format": "Date of Birth must be in (YYYY-MM-DD) format",
     }),
-    profilePic: joi.string(),
+    profilePic: joi.string(),                                                                                                                                                                           
   });
 
-  // console.log("req.body.userData", req.body.userData);
+  // console.log("req.body.userData", req.body.userData)                                                                        ;
   const errors = schema.validate(req.body);
-  if (errors.error) {
+  if (errors.error) {                                                                                                                                                                                  
     res.send({ status: false, error: errors.error.details });
   } else {
     next();
   }
-};
+};                                                                                                                                      
 
 module.exports = { signUpValidation, loginValidations, updateValidations };

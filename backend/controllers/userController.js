@@ -9,7 +9,7 @@ const {
 const createUser = async (req, res) => {
   const isUser = await findUser(req.body.email);
   if (isUser.status) {
-    res.send(isUser);
+    res.send({status:false, error: isUser.message});
   } else {
     await registerNewUser(req, res);
   }
