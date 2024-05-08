@@ -22,4 +22,35 @@ const getCountryCodes = async (req, res) => {
   }
 };
 
-module.exports = { addCountryCodes, getCountryCodes };
+const apiCall = async (code) => {
+  const getCodesOneByOne = await countryCode.findOne(
+    { code },
+    { _id: 0, country: 0, code: 0 }
+  );
+  return getCodesOneByOne;
+};
+
+const fetchCountryOneByOne = async (req, res) => {
+  const apidata = req.body.data;
+
+  try {
+    const getData = await Promise.all(
+      apidata.map(async (i) => {
+        // return await apiCall(i.code);
+        const getCodesOneByOne = await countryCode.findOne(
+          { code: i.code },
+          { _id: 0, country: 0, code: 0 }
+        );
+        if (getCodesOneByOne) {
+          return getCodesOneByOne;
+        }
+      })
+    ).then((resp) => resp);
+
+    res.send({ status: true, data: getData });
+  } catch (error) {
+    res.send({ status: false, message: error.message });
+  }
+};
+
+module.exports = { addCountryCodes, getCountryCodes, fetchCountryOneByOne };
