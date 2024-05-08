@@ -1,11 +1,13 @@
-import React from 'react'
+import React from "react";
 
-const CustomButton = ({className, text}) => {
+const CustomButton = ({ className, text, onClick }) => {
   return (
     <div>
-      <button type='submit' className={className}>{text}</button>
+      <button type="submit" className={className} onClick={onClick}>
+        {text}
+      </button>
     </div>
-  )
-}
+  );
+};
 
-export default CustomButton
+export default CustomButton;

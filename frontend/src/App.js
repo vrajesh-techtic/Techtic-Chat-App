@@ -1,15 +1,19 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import WithoutAuth from './routerProtector/WithoutAuth';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
+import HomePage from './pages/HomePage';
+import WithAuth from './routerProtector/WithAuth';
+import StepSignup from './pages/StepSignup';
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<WithoutAuth Component={<Login />} />} />
-        <Route path="/signup" element={<WithoutAuth Component={<Signup />} />} />
+
+        <Route path="/" element={<WithAuth Component={<HomePage />} />} />
+        <Route path="/login" element={<WithAuth Component={<Login />} />} />
+        <Route path="/signup" element={<WithAuth Component={<StepSignup />} />} />
       </Routes>
     </>
   );

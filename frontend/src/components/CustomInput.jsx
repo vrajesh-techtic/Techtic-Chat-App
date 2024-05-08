@@ -109,17 +109,19 @@ const CustomInput = ({
       </div>
 <div className="flex flex-row gap-[15px]">
 
+
+      {dropdown_error && dropdown_touched && (
+        <div className="text-sm my-1" style={errorStyle}>
+          {dropdown_error}
+        </div>
+      )}  
+
       {errors && touched && (
         <div className="text-sm my-1" style={errorStyle}>
           {errors}
         </div>
       )}
 
-      {dropdown_error && dropdown_touched && (
-        <div className="text-sm my-1" style={errorStyle}>
-          {dropdown_error}
-        </div>
-      )}
 </div>
     </>
   );

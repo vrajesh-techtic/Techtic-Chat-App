@@ -57,16 +57,8 @@ const Signup = () => {
           dob: values?.dob,
         };
 
-        // formData.append("email", values?.email);
-        // formData.append("username", values?.username);
-        // formData.append("name", values?.name);
-        // formData.append("password", values?.password);
-        // formData.append("phoneNumber", values?.phoneNumber);
-        // formData.append("countryCode", values?.countryCode);
-        // formData.append("profilePic", values?.profilePic);
-        // formData.append("gender", values?.gender);
-        // formData.append("dob", values?.dob);
-        console.log("formData -->", formData);
+        
+        // console.log("formData -->", formData);
 
         const response = await axios.post(
           `http://localhost:5000/api/user/signup`,
@@ -225,7 +217,7 @@ const Signup = () => {
         <Divider style={{ border: "1px solid #e5e7eb" }} className="my-2" />
         <Link
           className="p-[1.5%] my-2 rounded-lg text-center shadow-xl bg-red-500 text-white text-lg font-semibold w-[100%] mx-auto"
-          to="/"
+          to="/login"
         >
           Already have an account, Click here!
         </Link>
