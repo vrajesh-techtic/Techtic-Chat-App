@@ -7,6 +7,7 @@ const HomePage = () => {
     navigate("/login");
     localStorage.clear();
   };
+
   return (
     <div>
       Home Page

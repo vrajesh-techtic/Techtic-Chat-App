@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { country_code } from "../demoCountryCodePhoneNum";
 import { DatePicker } from "antd";
+import axios from "axios";
 
 const errorStyle = {
   color: "red",
 };
-
 const CustomInput = ({
   type,
   name,
@@ -26,6 +26,26 @@ const CustomInput = ({
   accept,
   selectOptionArray,
 }) => {
+  const [countryData, setCountryData] = useState([]);
+  const callCountryCode = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/get-country-codes"
+      );
+      if (response.status) {
+        setCountryData(response.data.data);
+        return;
+      }
+    } catch (error) {
+      console.log("Error in catch -->", error);
+      return;
+    }
+  };
+
+  useEffect(()=>{
+    callCountryCode();
+  },[])
+
   return (
     <>
       <div className="my-1 flex flex-col">
@@ -60,9 +80,9 @@ const CustomInput = ({
                 onBlur={dropdown_onBlur}
               >
                 <option value="">{default_select_value}</option>
-                {country_code?.map((country) => (
-                  <option value={country["code"]}>
-                    {country["iso"] + "  +" + country["code"]}{" "}
+                {countryData?.map((country) => (
+                  <option value={country.code}>
+                    {country.iso + "  +" + country.code}
                   </option>
                 ))}
               </select>
@@ -107,22 +127,19 @@ const CustomInput = ({
           </select>
         )}
       </div>
-<div className="flex flex-row gap-[15px]">
+      <div className="flex flex-row gap-[15px]">
+        {dropdown_error && dropdown_touched && (
+          <div className="text-sm my-1" style={errorStyle}>
+            {dropdown_error}
+          </div>
+        )}
 
-
-      {dropdown_error && dropdown_touched && (
-        <div className="text-sm my-1" style={errorStyle}>
-          {dropdown_error}
-        </div>
-      )}  
-
-      {errors && touched && (
-        <div className="text-sm my-1" style={errorStyle}>
-          {errors}
-        </div>
-      )}
-
-</div>
+        {errors && touched && (
+          <div className="text-sm my-1" style={errorStyle}>
+            {errors}
+          </div>
+        )}
+      </div>
     </>
   );
 };

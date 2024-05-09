@@ -12,7 +12,6 @@ import StepSignup3 from "../components/StepSignup3";
 import StepSignup4 from "../components/StepSignup4";
 import CustomSignupLoginHeader from "../components/CustomSignupLoginHeader";
 
-
 const Signup = () => {
   const { openNotification, contextHolder } = notificationProvider();
   const [step, setStep] = useState(1);
@@ -91,7 +90,6 @@ const Signup = () => {
   // increment / decrement step
 
   const handleStep = (action, errors = null) => {
-
     if (action == "increment" && step < 4 && errors) {
       if (
         step === 1 &&
@@ -122,11 +120,9 @@ const Signup = () => {
 
   return (
     <>
-
-      <CustomSignupLoginHeader/>
+      <CustomSignupLoginHeader />
       {contextHolder}
 
-     
       <form
         onSubmit={handleSubmit}
         className="flex flex-col mt-[-5%] bg-white w-[35%] z-10 shadow-xl  p-[2%] mx-auto rounded-lg"
