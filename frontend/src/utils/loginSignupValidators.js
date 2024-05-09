@@ -35,30 +35,31 @@ export const customSignupValidations = Yup.object({
         "Name should not contain only spaces",
         (value) => !/^\s+$/.test(value)
       ),
-      username: Yup.string()
-      .required("Username is required*")
+    username: Yup.string()
+    .required("Username is required*")
+    .test(
+      "no-spaces",
+      "Username should not contain only spaces",
+      (value) => !/^\s+$/.test(value)
+    ),
+    password: Yup.string()
+      .min(7)
+      .trim(true)
+      .required("Password is required*")
       .test(
         "no-spaces",
-        "Username should not contain only spaces",
+        "Password should not contain only spaces",
         (value) => !/^\s+$/.test(value)
-      ),
-  password: Yup.string()
-    .min(7)
-    .trim(true)
-    .required("Password is required*")
-    .test(
-      "no-spaces",
-      "Password should not contain only spaces",
-      (value) => !/^\s+$/.test(value)
     ),
-  cpassword: Yup.string()
-    .oneOf([Yup.ref("password")], "Password and Confirm Password not matched")
-    .required("Confirm Password is required")
-    .test(
-      "no-spaces",
-      "Confirm Password should not contain spaces",
-      (value) => !/^\s+$/.test(value)
-    ),
+    cpassword: Yup.string()
+      .oneOf([Yup.ref("password")], "Password and Confirm Password not matched")
+      .required("Confirm Password is required")
+      .test(
+        "no-spaces",
+        "Confirm Password should not contain spaces",
+        (value) => !/^\s+$/.test(value)
+    )
+    .label("Confirm Password"),
     phoneNumber: Yup.string()
       .required("Phone number is required*")
       .min(10)
@@ -67,7 +68,8 @@ export const customSignupValidations = Yup.object({
         "no-spaces",
         "Phone number should not contain spaces",
         (value) => !/^\s+$/.test(value)
-      ),
+      )
+      .label("Phone Number"),
       gender: Yup.string().required("Gender is required"),
       dob: Yup.date().required("Date of birth is required"),
       countryCode: Yup.string().required("Please select country code"),

@@ -62,7 +62,7 @@ const CustomInput = ({
                 <option value="">{default_select_value}</option>
                 {country_code?.map((country) => (
                   <option value={country["code"]}>
-                    {country["iso"] + " " + country["code"]}{" "}
+                    {country["iso"] + "  +" + country["code"]}{" "}
                   </option>
                 ))}
               </select>

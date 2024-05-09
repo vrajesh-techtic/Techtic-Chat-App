@@ -1,19 +1,20 @@
-import React from "react";
-import CustomInput from "../components/CustomInput";
+import React, { useState } from "react";
 import { Divider } from "antd";
 import CustomButton from "../components/CustomButton";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import { customSignupValidations } from "../utils/loginSignupValidators";
 import axios from "axios";
-import dayjs from "dayjs";
 import notificationProvider from "../utils/notificationProvider";
+import StepSignup1 from "../components/StepSignup1";
+import StepSignup2 from "../components/StepSignup2";
+import StepSignup3 from "../components/StepSignup3";
+import StepSignup4 from "../components/StepSignup4";
 
-const BACKEND_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-// console.log("backend url -->", BACKEND_URL);
 
 const Signup = () => {
   const { openNotification, contextHolder } = notificationProvider();
+  const [step, setStep] = useState(1);
 
   const initialValues = {
     email: "",
@@ -41,7 +42,7 @@ const Signup = () => {
     initialValues: initialValues,
     validationSchema: customSignupValidations,
     onSubmit: async (values) => {
-      console.log("values: ", values);
+      // console.log("values: ", values);
       try {
         // const formData = new FormData();
         const formData = {
@@ -57,7 +58,6 @@ const Signup = () => {
           dob: values?.dob,
         };
 
-        
         // console.log("formData -->", formData);
 
         const response = await axios.post(
@@ -87,7 +87,47 @@ const Signup = () => {
     },
   });
 
-  // console.log("values",values);
+  // increment / decrement step
+
+  const handleStep = (action, errors = null) => {
+    console.log("step: ", step);
+    console.log(
+      "rtrtrtrt",
+      step === 1 &&
+        !errors.email &&
+        !errors.name &&
+        !errors.username &&
+        !values.email &&
+        !values.name &&
+        !values.username
+    );
+    if (action == "increment" && step < 4 && errors) {
+      if (
+        step === 1 &&
+        !(!values.email || !values.name || !values.username) &&
+        !(errors.email && errors.name && errors.username)
+      ) {
+        setStep(step + 1);
+      }
+      if (
+        step == 2 &&
+        !errors.password &&
+        !errors.cpassword &&
+        !(!touched.password || !touched.cpassword)
+      ) {
+        setStep(step + 1);
+      }
+      if (step == 3 && !errors.phoneNumber) {
+        setStep(step + 1);
+      }
+      if (step == 4 && !errors.gender && !errors.dob) {
+        setStep(step + 1);
+      }
+    }
+    if (action == "decrement" && step > 1) {
+      setStep(step - 1);
+    }
+  };
 
   return (
     <>
@@ -100,121 +140,75 @@ const Signup = () => {
           Signup
         </div>
         <Divider style={{ border: "1px solid #e5e7eb" }} className="my-2" />
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors.email}
-          touched={touched.email}
-          value={values.email}
-          type="text"
-          placeholder="Enter the email"
-          label="Email:"
-          name="email"
-        />
 
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors.name}
-          touched={touched.name}
-          value={values.name}
-          type="text"
-          placeholder="Enter your full name"
-          label="Name:"
-          name="name"
-        />
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors.username}
-          touched={touched.username}
-          value={values.username}
-          type="text"
-          placeholder="Enter the username"
-          label="Username:"
-          name="username"
-        />
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors.password}
-          touched={touched.password}
-          value={values.password}
-          type="password"
-          placeholder="Enter the password"
-          label="Password:"
-          name="password"
-        />
+        {/* In step 1 signup, only display email, username and name fields  */}
 
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors.cpassword}
-          touched={touched.cpassword}
-          value={values.cpassword}
-          type="password"
-          placeholder="Enter the confirm password"
-          label="Confirm Password:"
-          name="cpassword"
-        />
+        {step == 1 && (
+          <StepSignup1
+            errors={errors}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            touched={touched}
+            values={values}
+          />
+        )}
 
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors.phoneNumber}
-          touched={touched.phoneNumber}
-          value={values.phoneNumber}
-          dropdown_value={values.countryCode}
-          default_select_value="country code"
-          type="number"
-          dropdown_name="countryCode"
-          dropdown_error={errors.countryCode}
-          dropdown_touched={touched.countryCode}
-          dropdown_onChange={handleChange}
-          dropdown_onBlur={handleBlur}
-          placeholder="Enter the phone number"
-          label="Phone Number:"
-          name="phoneNumber"
-        />
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          type="file"
-          accept="image/*"
-          label="Upload your profile picture"
-          name="profilePic"
-        />
-        <CustomInput
-          onChange={handleChange}
-          onBlur={handleBlur}
-          errors={errors.gender}
-          touched={touched.gender}
-          name="gender"
-          type="dropdown"
-          label="Select your gender:"
-          value={values.gender}
-          selectOptionArray={["Male", "Female", "Others"]}
-          default_select_value="Select the gender"
-        />
+        {/* In step 2 signup, only display password and confirm password  */}
 
-        <CustomInput
-          type="date"
-          label="Select your Date of Birth:"
-          name="dob"
-          value={values.dob ? dayjs(values.dob, "YYYY-MM-DD") : null}
-          onChange={(e) =>
-            setValues({ ...values, dob: dayjs(e).format("YYYY-MM-DD") })
-          }
-          onBlur={handleBlur}
-          errors={errors.dob}
-          touched={touched.dob}
-        />
+        {step == 2 && (
+          <StepSignup2
+            errors={errors}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            touched={touched}
+            values={values}
+          />
+        )}
 
-        <CustomButton
-          className="p-[1.5%] shadow-xl my-2 rounded-lg text-center bg-green-400 text-white text-lg font-semibold w-[100%] mx-auto"
-          text="Submit"
-        />
+        {/* In step 3 signup, only display phone number and upload image  */}
+
+        {step == 3 && (
+          <StepSignup3
+            errors={errors}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            touched={touched}
+            values={values}
+          />
+        )}
+
+        {/* In step 4 signup, only display gender and date */}
+
+        {step == 4 && (
+          <StepSignup4
+            errors={errors}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            touched={touched}
+            values={values}
+            setValues={setValues}
+          />
+        )}
+
+        <div className="grid grid-cols-2 gap-10 my-2">
+          {step > 1 && step <= 4 && (
+            <CustomButton
+              onClick={() => handleStep("decrement")}
+              className={`p-[3.5%] shadow-xl  rounded-lg text-center bg-red-500 text-white text-lg font-semibold w-[100%]`}
+              text={"Back"}
+            />
+          )}
+          {step < 5 && (
+            <CustomButton
+              onClick={() => handleStep("increment", errors)}
+              className=" p-[3.5%] shadow-xl  rounded-lg text-center bg-green-400 text-white text-lg font-semibold w-[100%] "
+              text={step < 4 ? "Continue" : "Submit"}
+            />
+          )}
+        </div>
+
         <Divider style={{ border: "1px solid #e5e7eb" }} className="my-2" />
+
         <Link
           className="p-[1.5%] my-2 rounded-lg text-center shadow-xl bg-red-500 text-white text-lg font-semibold w-[100%] mx-auto"
           to="/login"
