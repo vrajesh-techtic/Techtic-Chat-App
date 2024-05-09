@@ -10,6 +10,7 @@ import StepSignup1 from "../components/StepSignup1";
 import StepSignup2 from "../components/StepSignup2";
 import StepSignup3 from "../components/StepSignup3";
 import StepSignup4 from "../components/StepSignup4";
+import CustomSignupLoginHeader from "../components/CustomSignupLoginHeader";
 
 
 const Signup = () => {
@@ -90,17 +91,7 @@ const Signup = () => {
   // increment / decrement step
 
   const handleStep = (action, errors = null) => {
-    console.log("step: ", step);
-    console.log(
-      "rtrtrtrt",
-      step === 1 &&
-        !errors.email &&
-        !errors.name &&
-        !errors.username &&
-        !values.email &&
-        !values.name &&
-        !values.username
-    );
+
     if (action == "increment" && step < 4 && errors) {
       if (
         step === 1 &&
@@ -131,10 +122,14 @@ const Signup = () => {
 
   return (
     <>
+
+      <CustomSignupLoginHeader/>
       {contextHolder}
+
+     
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-[35%] shadow-xl p-[2%] mx-auto my-[4%] rounded-lg"
+        className="flex flex-col mt-[-5%] bg-white w-[35%] z-10 shadow-xl  p-[2%] mx-auto rounded-lg"
       >
         <div className="text-center font-bold text-xl text-zinc-500">
           Signup

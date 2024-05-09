@@ -7,6 +7,7 @@ import { useFormik } from 'formik'
 import { customLoginValidations } from '../utils/loginSignupValidators'
 import notificationProvider from '../utils/notificationProvider'
 import axios from 'axios'
+import CustomSignupLoginHeader from '../components/CustomSignupLoginHeader'
 
 
 
@@ -69,8 +70,10 @@ const Login = () => {
 
   return (
     <>
+    <CustomSignupLoginHeader />
     {contextHolder}
-    <form onSubmit={handleSubmit} className="flex flex-col w-[35%] shadow-xl p-[2%] mx-auto my-[4%] rounded-lg">
+
+    <form onSubmit={handleSubmit} className="flex flex-col mt-[-5%] bg-white w-[35%] shadow-xl p-[2%] mx-auto my-[4%] rounded-lg">
       <div className="text-center font-bold text-xl text-zinc-500">Login</div>
       <Divider style={{border: "1px solid #e5e7eb"}} className='my-2'/>
       <CustomInput 

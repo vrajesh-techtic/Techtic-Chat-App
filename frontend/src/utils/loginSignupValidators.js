@@ -66,11 +66,12 @@ export const customSignupValidations = Yup.object({
       .max(10)
       .test(
         "no-spaces",
-        "Phone number should not contain spaces",
-        (value) => !/^\s+$/.test(value)
+        "Phone number should not contain spaces and should be positive",
+        (value) => value ? value >0 && !/^\s+$/.test(value) : " " 
       )
       .label("Phone Number"),
       gender: Yup.string().required("Gender is required"),
       dob: Yup.date().required("Date of birth is required"),
       countryCode: Yup.string().required("Please select country code"),
+      profilePic: Yup.mixed().required("Please upload image")
 });
