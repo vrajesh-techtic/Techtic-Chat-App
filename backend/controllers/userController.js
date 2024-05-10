@@ -1,3 +1,4 @@
+const upload = require("../middleware/multer");
 const { users } = require("../models/userModel");
 const {
   registerNewUser,
@@ -7,9 +8,10 @@ const {
 
 // function to create new user
 const createUser = async (req, res) => {
+  // console.log("req.body", req.body.email);
   const isUser = await findUser(req.body.email);
   if (isUser.status) {
-    res.send({status:false, error: isUser.message});
+    res.send({ status: false, error: isUser.message });
   } else {
     await registerNewUser(req, res);
   }

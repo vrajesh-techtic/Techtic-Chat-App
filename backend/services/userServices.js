@@ -36,11 +36,26 @@ const registerNewUser = async (req, res) => {
   try {
     const createQuery = await users.create(req.body);
 
+    const userData = {
+      email: createQuery?.email,
+      username: createQuery?.username,
+      name: createQuery?.name,
+      countryCode: createQuery?.countryCode,
+      phoneNumber: createQuery?.phoneNumber,
+      gender: createQuery?.gender,
+      dob: createQuery?.dob,
+      profilePic: createQuery?.profilePic,
+      lastSeen: createQuery?.lastSeen,
+    };
     if (createQuery) {
       const token = generateToken(createQuery._id.valueOf());
       res.cookie("TokenId", token);
 
-      res.send({ status: true, message: "User added successfully!" });
+      res.send({
+        status: true,
+        message: "User added successfully!",
+        data: userData,
+      });
     }
   } catch (error) {
     res.send({ status: false, message: error.message });
@@ -50,12 +65,15 @@ const registerNewUser = async (req, res) => {
 const validateLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const loginQuery = await users.findOne({ email });
+    const loginQuery = await users.findOne(
+      { email },
+      { _id: 0, password: 0, createdAt: 0, updatedAt: 0 }
+    );
 
     if (await verifyPassword(password, loginQuery.password)) {
       const token = generateToken(loginQuery._id.valueOf());
       res.cookie("TokenId", token);
-      res.send({ status: true, message: "Login Successfully" });
+      res.send({ status: true, message: "Login Successfully", loginQuery });
     } else {
       res.send({ status: false, message: "Invalid Password!" });
     }

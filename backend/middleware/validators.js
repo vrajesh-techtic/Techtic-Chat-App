@@ -2,6 +2,7 @@ const moment = require("moment");
 const joi = require("joi");
 
 const signUpValidation = (req, res, next) => {
+  console.log("called");
   const schema = joi.object({
     email: joi.string().email().required().messages({
       "string.email": "Please enter valid email!",
@@ -71,11 +72,11 @@ const signUpValidation = (req, res, next) => {
       .messages({
         "date.format": "Date of Birth must be in (YYYY-MM-DD) format",
       }),
-    // profilePic: joi.string().required(),
+    profilePic: joi.string().required(),
     lastSeen: joi.optional(),
   });
 
-  console.log("req.body", req.body);
+  // console.log("req.body", req.body);
 
   const errors = schema.validate(req.body);
   if (errors.error) {

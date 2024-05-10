@@ -10,6 +10,7 @@ const {
   updateValidations,
 } = require("../middleware/validators");
 const { authenticate } = require("../middleware/authentication");
+const upload = require("../middleware/multer");
 
 const router = express.Router();
 
@@ -21,7 +22,16 @@ router.get("/validate-token", async (req, res) => {
   res.send(authenticate(req));
 });
 
-router.post("/signup", signUpValidation, createUser);
+router.post(
+  "/signup",
+  signUpValidation,
+  // upload.single("profilePic"),
+  createUser
+);
+// router.post("/signup", upload.any(), (req, res) => {
+//   console.log(req.files);
+// });
+
 router.post("/login", loginValidations, loginUser);
 router.post("/update-user", authenticate, updateValidations, updateUser);
 
