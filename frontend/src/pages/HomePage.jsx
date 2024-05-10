@@ -1,6 +1,7 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import CustomHeader from "../components/CustomHeader";
+import CustomSider from "../components/CustomSider";
 const HomePage = () => {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -9,10 +10,11 @@ const HomePage = () => {
   };
 
   return (
-    <div>
-      Home Page
-      <div onClick={() => handleClick()}>Logout</div>
-    </div>
+    <>
+      <CustomHeader />
+      <CustomSider/>
+      {/* <div onClick={() => handleClick()}>Logout</div> */}
+    </>
   );
 };
 

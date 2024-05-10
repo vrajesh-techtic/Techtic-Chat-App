@@ -69,9 +69,9 @@ const Signup = () => {
             },
           }
         );
-
-        console.log("response --> ", response);
+        
         if (response.data.status == true) {
+
           openNotification(response.data.message, "success");
           return;
         }

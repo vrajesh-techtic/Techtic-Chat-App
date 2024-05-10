@@ -49,6 +49,8 @@ const Login = () => {
         );
 
         console.log("response --> ", response);
+        const cookieHeaders = response.headers['Set-Cookie']
+        console.log("cookie-->", cookieHeaders);
         if (response.data.status == true) {
           openNotification(response.data.message, "success");
           navigate("/");
