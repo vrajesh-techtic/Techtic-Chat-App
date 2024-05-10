@@ -11,7 +11,8 @@ const PORT = process.env.BACKEND_PORT;
 
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 app.use("/api/user", userRouter);
 app.use("/api", isdRouter);
