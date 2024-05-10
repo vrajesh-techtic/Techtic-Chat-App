@@ -34,27 +34,22 @@ const findUser = async (email) => {
 
 const registerNewUser = async (req, res) => {
   try {
-    const createQuery = await users.create(req.body);
+    let createQuery = await users.create(req.body);
 
-    const userData = {
-      email: createQuery?.email,
-      username: createQuery?.username,
-      name: createQuery?.name,
-      countryCode: createQuery?.countryCode,
-      phoneNumber: createQuery?.phoneNumber,
-      gender: createQuery?.gender,
-      dob: createQuery?.dob,
-      profilePic: createQuery?.profilePic,
-      lastSeen: createQuery?.lastSeen,
-    };
     if (createQuery) {
       const token = generateToken(createQuery._id.valueOf());
       res.cookie("TokenId", token);
 
+      createQuery = createQuery.toObject();
+      delete createQuery?.password;
+      delete createQuery?._id;
+      delete createQuery?.updatedAt;
+      delete createQuery?.createdAt;
+
       res.send({
         status: true,
         message: "User added successfully!",
-        data: userData,
+        data: createQuery,
       });
     }
   } catch (error) {
@@ -65,27 +60,21 @@ const registerNewUser = async (req, res) => {
 const validateLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const loginQuery = await users.findOne({ email });
-
-    const userData = {
-      email: loginQuery?.email,
-      username: loginQuery?.username,
-      name: loginQuery?.name,
-      countryCode: loginQuery?.countryCode,
-      phoneNumber: loginQuery?.phoneNumber,
-      gender: loginQuery?.gender,
-      dob: loginQuery?.dob,
-      profilePic: loginQuery?.profilePic,
-      lastSeen: loginQuery?.lastSeen,
-    };
+    let loginQuery = await users.findOne(
+      { email },
+      { createdAt: 0, updatedAt: 0 }
+    );
 
     if (await verifyPassword(password, loginQuery.password)) {
       const token = generateToken(loginQuery._id.valueOf());
       res.cookie("TokenId", token);
+      loginQuery = loginQuery.toObject();
+      delete loginQuery?.password;
+      delete loginQuery?._id;
       res.send({
         status: true,
         message: "Login Successfully",
-        data: userData,
+        data: loginQuery,
       });
     } else {
       res.send({ status: false, message: "Invalid Password!" });

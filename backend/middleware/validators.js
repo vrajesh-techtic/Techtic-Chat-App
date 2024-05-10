@@ -72,7 +72,7 @@ const signUpValidation = (req, res, next) => {
       .messages({
         "date.format": "Date of Birth must be in (YYYY-MM-DD) format",
       }),
-    // profilePic: joi.string().required(),
+    profilePic: joi.string().optional(),
     lastSeen: joi.optional(),
   });
 

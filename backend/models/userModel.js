@@ -54,6 +54,7 @@ const userSchema = new Schema(
 
     lastSeen: {
       type: Date,
+      default: null,
     },
   },
   { timestamps: true, versionKey: false }
