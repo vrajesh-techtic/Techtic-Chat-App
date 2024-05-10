@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Divider } from "antd";
 import CustomButton from "../components/CustomButton";
 import { Link } from "react-router-dom";
@@ -15,6 +15,9 @@ import CustomSignupLoginHeader from "../components/CustomSignupLoginHeader";
 const Signup = () => {
   const { openNotification, contextHolder } = notificationProvider();
   const [step, setStep] = useState(1);
+
+ 
+
 
   const initialValues = {
     email: "",
@@ -71,17 +74,20 @@ const Signup = () => {
         );
         
         if (response.data.status == true) {
-
           openNotification(response.data.message, "success");
+          localStorage.setItem("user", JSON.stringify(response.data.data));
+          resetForm();
           return;
         }
         if (response.data.status == false) {
           openNotification(response.data.error, "error");
+          resetForm();
           return;
         }
       } catch (error) {
         console.log("Error in signup -->", error);
         openNotification(error.response.data.message, "error");
+        resetForm();
         return;
       }
     },

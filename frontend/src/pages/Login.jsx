@@ -13,7 +13,7 @@ import CustomSignupLoginHeader from '../components/CustomSignupLoginHeader'
 
 const Login = () => {
   const { openNotification, contextHolder } = notificationProvider();
-  const userData='"user":"{\"user\":{\"id\":\"662f6de52fdad9c147ea79f1\",\"name\":\"levi prescott\",\"email\":\"levi.prescott@yopmail.com\",\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoibGV2aS5wcmVzY290dEB5b3BtYWlsLmNvbSIsImlkIjoiNjYyZjZkZTUyZmRhZDljMTQ3ZWE3OWYxIiwicm9sZSI6InVzZXIifSwiaWF0IjoxNzE1MTU5MDY3LCJleHAiOjE3MTUxNzcwNjd9.EnPnLSG_Q3VDwEURqV3wEWe5Wl3aezjJCBZ4r_vnUyA\",\"profile_pic\":\"https://app.websitetestingbox.com/h2o-api/uploads/profile_pictures/1714985853333-37259268-662f6de52fdad9c147ea79f1.png\"},\"profile\":{\"id\":\"662f6de52fdad9c147ea79f1\",\"name\":\"levi prescott\",\"email\":\"levi.prescott@yopmail.com\",\"profile_pic\":\"https://app.websitetestingbox.com/h2o-api/uploads/profile_pictures/1714985853333-37259268-662f6de52fdad9c147ea79f1.png\",\"phone_number\":\"9876543210\",\"dob\":\"2001-01-14T00:00:00.000Z\",\"ethnicity\":\"asian\",\"height\":25,\"weight\":25,\"gender\":\"male\",\"health_condition\":\"Good\"}}","_persist":"{\"version\":-1,\"rehydrated\":true}"'
+
   const initialValues={
     email: "",
     password: ""
@@ -45,30 +45,35 @@ const Login = () => {
             headers: {
               "Content-Type": "application/json",
             },
+            withCredentials: true
           }
         );
 
-        console.log("response --> ", response);
-        const cookieHeaders = response.headers['Set-Cookie']
-        console.log("cookie-->", cookieHeaders);
+        console.log("response -->", response);
+
         if (response.data.status == true) {
           openNotification(response.data.message, "success");
           navigate("/");
-          localStorage.setItem("user", userData)
-          localStorage.setItem("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoibGV2aS5wcmVzY290dEB5b3BtYWlsLmNvbSIsImlkIjoiNjYyZjZkZTUyZmRhZDljMTQ3ZWE3OWYxIiwicm9sZSI6InVzZXIifSwiaWF0IjoxNzE1MTU5MDY3LCJleHAiOjE3MTUxNzcwNjd9.EnPnLSG_Q3VDwEURqV3wEWe5Wl3aezjJCBZ4r_vnUyA")
+          localStorage.setItem("user", JSON.stringify(response.data.data));
+          resetForm();
           return;
         }
         if (response.data.status == false) {
-          openNotification(response.data.error, "error");
+          console.log("response -->", response);
+
+          openNotification(response.data.message, "error");
+          resetForm();
           return;
         }
       } catch (error) {
         console.log("Error in signup -->", error);
-        openNotification(error.response.data.message, "error");
+        openNotification(error.response.data.message || error.message, "error");
+        resetForm();
         return;
       }
    }
  })
+
 
   return (
     <>
@@ -104,7 +109,7 @@ const Login = () => {
       
       <Divider style={{border: "1px solid #e5e7eb"}} className='my-2'/>
       
-      <Link className="p-[1.5%] my-2 rounded-lg text-center shadow-xl bg-red-500 text-white text-lg font-semibold w-[100%] mx-auto" to="/signup">New User, Click here!</Link>
+      <Link className="p-[1.5%] my-2 rounded-lg text-center shadow-xl bg-red-500 text-white text-lg font-semibold w-[100%] mx-auto" to="/signup" >New User, Click here!</Link>
     
     </form>
     </>

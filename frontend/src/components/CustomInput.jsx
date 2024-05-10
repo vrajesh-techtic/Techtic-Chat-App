@@ -25,27 +25,9 @@ const CustomInput = ({
   onBlur,
   accept,
   selectOptionArray,
+  countryData
 }) => {
-  const [countryData, setCountryData] = useState([]);
-  const callCountryCode = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/api/get-country-codes"
-      );
-      if (response.status) {
-        setCountryData(response.data.data);
-        return;
-      }
-    } catch (error) {
-      console.log("Error in catch -->", error);
-      return;
-    }
-  };
-
-  useEffect(()=>{
-    callCountryCode();
-  },[])
-
+ 
   return (
     <>
       <div className="my-1 flex flex-col">
