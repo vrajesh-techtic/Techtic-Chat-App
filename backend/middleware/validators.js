@@ -72,11 +72,11 @@ const signUpValidation = (req, res, next) => {
       .messages({
         "date.format": "Date of Birth must be in (YYYY-MM-DD) format",
       }),
-    profilePic: joi.string().required(),
+    // profilePic: joi.string().required(),
     lastSeen: joi.optional(),
   });
 
-  // console.log("req.body", req.body);
+  // console.log("req.file", req.file);
 
   const errors = schema.validate(req.body);
   if (errors.error) {

@@ -1,4 +1,5 @@
-const upload = require("../middleware/multer");
+const savePic = require("../middleware/saveProfilePic");
+const upload = require("../middleware/saveProfilePic");
 const { users } = require("../models/userModel");
 const {
   registerNewUser,
@@ -9,12 +10,14 @@ const {
 // function to create new user
 const createUser = async (req, res) => {
   // console.log("req.body", req.body.email);
-  const isUser = await findUser(req.body.email);
-  if (isUser.status) {
-    res.send({ status: false, error: isUser.message });
-  } else {
-    await registerNewUser(req, res);
-  }
+  // const isUser = await findUser(req.body.email);
+  // if (isUser.status) {
+  //   res.send({ status: false, error: isUser.message });
+  // } else {
+  //   await registerNewUser(req, res);
+  // }
+  // res.send(req.file);
+  savePic(req, res);
 };
 
 // function to login existing user

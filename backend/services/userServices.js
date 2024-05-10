@@ -65,15 +65,28 @@ const registerNewUser = async (req, res) => {
 const validateLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const loginQuery = await users.findOne(
-      { email },
-      { _id: 0, password: 0, createdAt: 0, updatedAt: 0 }
-    );
+    const loginQuery = await users.findOne({ email });
+
+    const userData = {
+      email: loginQuery?.email,
+      username: loginQuery?.username,
+      name: loginQuery?.name,
+      countryCode: loginQuery?.countryCode,
+      phoneNumber: loginQuery?.phoneNumber,
+      gender: loginQuery?.gender,
+      dob: loginQuery?.dob,
+      profilePic: loginQuery?.profilePic,
+      lastSeen: loginQuery?.lastSeen,
+    };
 
     if (await verifyPassword(password, loginQuery.password)) {
       const token = generateToken(loginQuery._id.valueOf());
       res.cookie("TokenId", token);
-      res.send({ status: true, message: "Login Successfully", loginQuery });
+      res.send({
+        status: true,
+        message: "Login Successfully",
+        data: userData,
+      });
     } else {
       res.send({ status: false, message: "Invalid Password!" });
     }

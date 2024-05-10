@@ -11,9 +11,8 @@ const bodyParser = require("body-parser");
 const PORT = process.env.BACKEND_PORT;
 
 app.use(morgan("dev"));
-// app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 app.use("/api/user", userRouter);

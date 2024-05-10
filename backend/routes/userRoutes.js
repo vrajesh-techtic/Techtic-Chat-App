@@ -10,9 +10,13 @@ const {
   updateValidations,
 } = require("../middleware/validators");
 const { authenticate } = require("../middleware/authentication");
-const upload = require("../middleware/multer");
 
 const router = express.Router();
+const multer = require("multer");
+
+const storage = multer.memoryStorage();
+
+const upload = multer({ storage });
 
 router.get("/", (req, res) => {
   res.send("API working !!");
@@ -24,8 +28,8 @@ router.get("/validate-token", async (req, res) => {
 
 router.post(
   "/signup",
+  upload.single("profilePic"),
   signUpValidation,
-  // upload.single("profilePic"),
   createUser
 );
 // router.post("/signup", upload.any(), (req, res) => {
