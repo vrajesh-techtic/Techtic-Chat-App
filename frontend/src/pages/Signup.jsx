@@ -11,6 +11,7 @@ import StepSignup2 from "../components/StepSignup2";
 import StepSignup3 from "../components/StepSignup3";
 import StepSignup4 from "../components/StepSignup4";
 import CustomSignupLoginHeader from "../components/CustomSignupLoginHeader";
+import WithoutAuth from "../routerProtector/WithoutAuth";
 
 const Signup = () => {
   const { openNotification, contextHolder } = notificationProvider();
@@ -217,4 +218,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default WithoutAuth(Signup);

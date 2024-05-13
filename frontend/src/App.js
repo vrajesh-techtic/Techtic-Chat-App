@@ -4,15 +4,17 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import WithAuth from "./routerProtector/WithAuth";
 import ChatLayout from "./pages/ChatLayout";
+import EditUserProfile from "./pages/EditUserProfile";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<WithAuth Component={<ChatLayout />} />} />
+        <Route path="/" element={<ChatLayout />} />
         {/* <Route path="/" element={<HomePage />} /> */}
-        <Route path="/login" element={<WithAuth Component={<Login />} />} />
-        <Route path="/signup" element={<WithAuth Component={<Signup />} />} />
+        <Route path="/login" element={<Login />}  />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/edit-user-profile" element={<EditUserProfile />} />
       </Routes>
     </>
   );

@@ -8,6 +8,7 @@ import { customLoginValidations } from '../utils/loginSignupValidators'
 import notificationProvider from '../utils/notificationProvider'
 import axios from 'axios'
 import CustomSignupLoginHeader from '../components/CustomSignupLoginHeader'
+import WithoutAuth from '../routerProtector/WithoutAuth'
 
 
 
@@ -116,4 +117,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default WithoutAuth(Login)

@@ -2,21 +2,18 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-const WithAuth = ({ Component }) => {
-
-  const navigate = useNavigate();
-
-  const token = Cookies.get('TokenId') || null;
-
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
+const WithAuth = (Component) => {
+  const Auth = (props)=>{
+    const token = Cookies.get('access_token') || null;
+    if(!token){
+      window.location.href="/login"
     }
     else{
-        navigate("/")
+      return <Component {...props}/>
     }
-  }, []);
-  return <div>{Component}</div>;
+    
+  }
+  return Auth;
 };
 
 export default WithAuth;

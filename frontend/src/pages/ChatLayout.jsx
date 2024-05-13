@@ -1,5 +1,6 @@
 import React from 'react'
 import HomePage from '../components/HomePage'
+import WithAuth from '../routerProtector/WithAuth'
 
 const ChatLayout = () => {
   return (
@@ -9,4 +10,4 @@ const ChatLayout = () => {
   )
 }
 
-export default ChatLayout
+export default WithAuth(ChatLayout)
