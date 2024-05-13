@@ -1,5 +1,6 @@
 const { verifyPassword } = require("../helpers/passwords");
 const { generateToken } = require("../helpers/tokens");
+const savePic = require("../middleware/saveProfilePic");
 const { users } = require("../models/userModel");
 const { ObjectId } = require("mongodb");
 
@@ -34,26 +35,32 @@ const findUser = async (email) => {
 
 const registerNewUser = async (req, res) => {
   try {
-    let createQuery = await users.create(req.body);
+    const pic = await savePic(req.file);
+    if (pic.status) {
+      req.body.profilePic = pic.url;
+      let createQuery = await users.create(req.body);
 
-    if (createQuery) {
-      const token = generateToken(createQuery._id.valueOf());
-      res.cookie("TokenId", token);
+      if (createQuery) {
+        const token = generateToken(createQuery._id.valueOf());
+        res.cookie("TokenId", token);
 
-      createQuery = createQuery.toObject();
-      delete createQuery?.password;
-      delete createQuery?._id;
-      delete createQuery?.updatedAt;
-      delete createQuery?.createdAt;
+        createQuery = createQuery.toObject();
+        delete createQuery?.password;
+        delete createQuery?._id;
+        delete createQuery?.updatedAt;
+        delete createQuery?.createdAt;
 
-      res.send({
-        status: true,
-        message: "User added successfully!",
-        data: createQuery,
-      });
+        res.status(200).send({
+          status: true,
+          message: "User added successfully!",
+          data: createQuery,
+        });
+      } else {
+        res.status(500).send(pic);
+      }
     }
   } catch (error) {
-    res.send({ status: false, message: error.message });
+    res.status(500).send({ status: false, message: error.message });
   }
 };
 
@@ -71,17 +78,51 @@ const validateLogin = async (req, res) => {
       loginQuery = loginQuery.toObject();
       delete loginQuery?.password;
       delete loginQuery?._id;
-      res.send({
+      res.status(200).send({
         status: true,
         message: "Login Successfully",
         data: loginQuery,
       });
     } else {
-      res.send({ status: false, message: "Invalid Password!" });
+      res.status(401).send({ status: false, message: "Invalid Password!" });
     }
   } catch (error) {
-    res.send({ status: false, message: error.message });
+    res.status(500).send({ status: false, message: error.message });
   }
 };
 
-module.exports = { registerNewUser, findUser, validateLogin, findUserById };
+const updateProfile = async (req, res) => {
+  const userId = req.headers.userId;
+  console.log("req.body", req.body);
+  console.log("req.file", req.file);
+  console.log("req.headers.userId", req.headers.userId);
+
+  try {
+    const pic = await savePic(req.file);
+    if (pic.status) {
+      req.body.profilePic = pic.url;
+
+      let updateQuery = await users.findByIdAndUpdate(userId, req.body);
+
+      if (updateQuery) {
+        res.status(200).send({
+          status: true,
+          message: "Profile updated successfully!",
+          data: req.body,
+        });
+      } else {
+        res.status(500).send(pic);
+      }
+    }
+  } catch (error) {
+    res.status(500).send({ status: false, message: error.message });
+  }
+};
+
+module.exports = {
+  registerNewUser,
+  findUser,
+  validateLogin,
+  findUserById,
+  updateProfile,
+};

@@ -72,15 +72,15 @@ const signUpValidation = (req, res, next) => {
       .messages({
         "date.format": "Date of Birth must be in (YYYY-MM-DD) format",
       }),
-    profilePic: joi.string().optional(),
-    lastSeen: joi.optional(),
+    // profilePic: joi.optional(),
+    // lastSeen: joi.optional(),
   });
 
   // console.log("req.file", req.file);
 
   const errors = schema.validate(req.body);
   if (errors.error) {
-    res.send({ status: false, error: errors.error.message });
+    res.status(404).send({ status: false, error: errors.error.message });
   } else {
     next();
   }
@@ -127,7 +127,7 @@ const loginValidations = (req, res, next) => {
   });
   const errors = schema.validate(req.body);
   if (errors.error) {
-    res.send({ status: false, error: errors.error.message });
+    res.status(404).send({ status: false, error: errors.error.message });
   } else {
     next();
   }
@@ -156,13 +156,12 @@ const updateValidations = (req, res, next) => {
     dob: joi.date().iso().max(moment.utc().format("YYYY-MM-DD")).messages({
       "date.format": "Date of Birth must be in (YYYY-MM-DD) format",
     }),
-    profilePic: joi.string(),
+    // profilePic: joi.string(),
   });
 
-  // console.log("req.body.userData", req.body.userData)                                                                        ;
   const errors = schema.validate(req.body);
   if (errors.error) {
-    res.send({ status: false, error: errors.error.details });
+    res.status(404).send({ status: false, error: errors.error.details });
   } else {
     next();
   }

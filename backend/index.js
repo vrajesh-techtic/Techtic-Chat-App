@@ -6,9 +6,12 @@ const app = express();
 const env = require("dotenv").config();
 const userRouter = require("./routes/userRoutes");
 const isdRouter = require("./routes/isdCodeRoutes");
-const bodyParser = require("body-parser");
+
+const path = require("path");
 
 const PORT = process.env.BACKEND_PORT;
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -22,4 +25,3 @@ app.listen(PORT, () => {
   console.log("Server started on ", PORT);
   connectDB();
 });
-

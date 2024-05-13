@@ -1,24 +1,28 @@
 const fs = require("fs");
+const path = require("path");
 
-const savePic = async (req, res) => {
+const savePic = async (file) => {
   try {
-    const file = req.file;
-    const folderPath = "/backend/uploads/profile-images/";
+    if (!file) {
+      return {
+        status: true,
+        url: `${process.env.BACKEND_URL}/uploads/defaultProfilePic.png`,
+      };
+    }
+    const uploadPath = path.join(__dirname, "..", "uploads", "profile-images");
+
     const fileName = `${Date.now()}_${file.originalname}`;
 
-    const fileLocation = folderPath + fileName;
+    const fileLocation = path.join(uploadPath, fileName);
 
-    console.log("fileLocation", fileLocation);
+    fs.writeFileSync(fileLocation, file.buffer);
 
-    const addFile = fs.writeFileSync(fileName, file.buffer, {
-      encoding: file.encoding,
-    });
-
-    console.log("addFile", addFile);
-
-    res.send(addFile);
+    return {
+      status: true,
+      url: `${process.env.BACKEND_URL}/uploads/profile-images/${fileName}`,
+    };
   } catch (error) {
-    res.send({ status: false, error: "Error while uploading Profile Pic!" });
+    return { status: false, error: error.message };
   }
 };
 

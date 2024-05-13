@@ -32,11 +32,17 @@ router.post(
   signUpValidation,
   createUser
 );
-// router.post("/signup", upload.any(), (req, res) => {
+
 //   console.log(req.files);
 // });
 
 router.post("/login", loginValidations, loginUser);
-router.post("/update-user", authenticate, updateValidations, updateUser);
+router.post(
+  "/update-user",
+  authenticate,
+  upload.single("profilePic"),
+  updateValidations,
+  updateUser
+);
 
 module.exports = router;

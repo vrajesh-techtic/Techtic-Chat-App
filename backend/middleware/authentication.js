@@ -12,10 +12,10 @@ const authenticate = async (req, res, next) => {
       req.headers.userId = isUser.data._id;
       next();
     } else {
-      res.send(isUser);
+      res.status(401).send(isUser);
     }
   } catch (error) {
-    res.send({ status: false, message: "Invalid Token" });
+    res.status(401).send({ status: false, message: "Invalid Token" });
   }
 };
 
