@@ -135,7 +135,7 @@ const loginValidations = (req, res, next) => {
 const updateValidations = (req, res, next) => {
   const schema = joi.object({
     username: joi.string().alphanum().min(4).max(20).messages({
-      "string.pattern.base": "Username must be alphanumeric only! ",
+      "string.alphanum": "Username must be alphanumeric only! ",
       "string.min": "Username should be of minimum 4 characters",
       "string.max": "Username should be of maximum 20 characters only",
     }),
@@ -155,12 +155,12 @@ const updateValidations = (req, res, next) => {
     dob: joi.date().iso().max(moment.utc().format("YYYY-MM-DD")).messages({
       "date.format": "Date of Birth must be in (YYYY-MM-DD) format",
     }),
-    // profilePic: joi.string(),
+    profilePic: joi.optional(),
   });
 
   const errors = schema.validate(req.body);
   if (errors.error) {
-    res.status(404).send({ status: false, error: errors.error.details });
+    res.status(404).send({ status: false, error: errors.error.message });
   } else {
     // console.log("req.body", req.body);
     // console.log("req.headers.cookie", req.headers.cookie);

@@ -104,21 +104,31 @@ const updateProfile = async (req, res) => {
   const userId = req.headers.userId;
 
   try {
-    const pic = await savePic(req.file);
-    if (pic.status) {
-      req.body.profilePic = pic.url;
-
-      let updateQuery = await users.findByIdAndUpdate(userId, req.body);
-
-      if (updateQuery) {
-        res.status(200).send({
-          status: true,
-          message: "Profile updated successfully!",
-          data: req.body,
-        });
+    if (req.file) {
+      const pic = await savePic(req.file);
+      // console.log("pic", pic);
+      if (pic.status) {
+        req.body.profilePic = pic.url;
       } else {
         res.status(500).send(pic);
       }
+    } else if (req.body.profilePic === "") {
+      delete req.body?.profilePic;
+    }
+
+    let updateQuery = await users.findByIdAndUpdate(userId, req.body);
+    // console.log("updateQuery", updateQuery);
+    const resp = (await findUserById(userId)).data.toObject();
+    delete resp?._id;
+    delete resp?.createdAt;
+    delete resp?.updatedAt;
+
+    if (updateQuery) {
+      res.status(200).send({
+        status: true,
+        message: "Profile updated successfully!",
+        data: resp,
+      });
     }
   } catch (error) {
     res.status(500).send({ status: false, message: error.message });

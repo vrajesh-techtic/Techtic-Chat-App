@@ -26,16 +26,15 @@ const authenticate = async (req, res, next) => {
 
     const tokens = { refresh_token, access_token };
 
-    const temp = decryptTokens(req, tokens);
+    const temp = await decryptTokens(req, tokens);
 
     if (temp?.status) {
+      res.cookie("access_token", temp.tokens.access_token);
+      res.cookie("refresh_token", temp.tokens.refresh_token);
       // res.status(200).send(temp);
       next();
     } else {
-      res.cookie("access_token", temp.tokens.access_token);
-      res.cookie("refresh_token", temp.tokens.refresh_token);
-      console.log("Token Updated!");
-      next();
+      res.status(401).send(temp);
     }
   } catch (error) {
     return res.status(401).send({ status: false, error: "Invalid Token" });
