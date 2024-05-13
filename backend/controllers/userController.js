@@ -30,4 +30,7 @@ const updateUser = async (req, res) => {
   await updateProfile(req, res);
 };
 
+
+
+
 module.exports = { createUser, loginUser, updateUser };

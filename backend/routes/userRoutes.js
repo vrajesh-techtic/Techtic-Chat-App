@@ -13,6 +13,11 @@ const { authenticate } = require("../middleware/authentication");
 
 const router = express.Router();
 const multer = require("multer");
+const {
+  createRefreshToken,
+  decryptTokens,
+  generateTokens,
+} = require("../helpers/tokens");
 
 const storage = multer.memoryStorage();
 
@@ -22,8 +27,18 @@ router.get("/", (req, res) => {
   res.send("API working !!");
 });
 
+router.post("/get-tokens", async (req, res) => {
+  const userId = req.body.userId;
+  const tokens = await generateTokens(userId);
+  res.send(tokens);
+});
+
+router.post("/decrypt-tokens", async (req, res) => {
+  res.send(decryptTokens(req.body));
+});
+
 router.get("/validate-token", async (req, res) => {
-  res.send(authenticate(req));
+  await authenticate(req, res);
 });
 
 router.post(

@@ -2,7 +2,6 @@ const moment = require("moment");
 const joi = require("joi");
 
 const signUpValidation = (req, res, next) => {
-  console.log("called");
   const schema = joi.object({
     email: joi.string().email().required().messages({
       "string.email": "Please enter valid email!",
@@ -163,6 +162,8 @@ const updateValidations = (req, res, next) => {
   if (errors.error) {
     res.status(404).send({ status: false, error: errors.error.details });
   } else {
+    // console.log("req.body", req.body);
+    // console.log("req.headers.cookie", req.headers.cookie);
     next();
   }
 };

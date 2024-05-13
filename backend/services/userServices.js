@@ -1,5 +1,5 @@
 const { verifyPassword } = require("../helpers/passwords");
-const { generateToken } = require("../helpers/tokens");
+const { generateTokens } = require("../helpers/tokens");
 const savePic = require("../middleware/saveProfilePic");
 const { users } = require("../models/userModel");
 const { ObjectId } = require("mongodb");
@@ -41,8 +41,12 @@ const registerNewUser = async (req, res) => {
       let createQuery = await users.create(req.body);
 
       if (createQuery) {
-        const token = generateToken(createQuery._id.valueOf());
-        res.cookie("TokenId", token);
+        const { access_token, refresh_token } = generateTokens(
+          createQuery._id.valueOf()
+        );
+
+        res.cookie("access_token", access_token);
+        res.cookie("refresh_token", refresh_token);
 
         createQuery = createQuery.toObject();
         delete createQuery?.password;
@@ -73,8 +77,13 @@ const validateLogin = async (req, res) => {
     );
 
     if (await verifyPassword(password, loginQuery.password)) {
-      const token = generateToken(loginQuery._id.valueOf());
-      res.cookie("TokenId", token);
+      const { access_token, refresh_token } = generateTokens(
+        loginQuery._id.valueOf()
+      );
+
+      res.cookie("access_token", access_token);
+      res.cookie("refresh_token", refresh_token);
+
       loginQuery = loginQuery.toObject();
       delete loginQuery?.password;
       delete loginQuery?._id;
@@ -93,9 +102,6 @@ const validateLogin = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   const userId = req.headers.userId;
-  console.log("req.body", req.body);
-  console.log("req.file", req.file);
-  console.log("req.headers.userId", req.headers.userId);
 
   try {
     const pic = await savePic(req.file);
