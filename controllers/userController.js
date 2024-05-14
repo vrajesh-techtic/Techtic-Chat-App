@@ -4,6 +4,7 @@ const {
   findUser,
   validateLogin,
   updateProfile,
+  changePassword,
 } = require("../services/userServices");
 
 // function to create new user
@@ -30,7 +31,11 @@ const updateUser = async (req, res) => {
   await updateProfile(req, res);
 };
 
+const updatePassword = async (req, res) => {
+  const pwd = req.body.password;
+  const id = req.headers.userId;
 
+  await changePassword(res,id, pwd);
+};
 
-
-module.exports = { createUser, loginUser, updateUser };
+module.exports = { createUser, loginUser, updateUser, updatePassword };

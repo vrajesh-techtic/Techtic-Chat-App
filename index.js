@@ -6,6 +6,7 @@ const app = express();
 const env = require("dotenv").config();
 const userRouter = require("./routes/userRoutes");
 const isdRouter = require("./routes/isdCodeRoutes");
+const pwdRouter = require("./routes/passwordRoutes");
 
 const path = require("path");
 
@@ -20,6 +21,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 app.use("/api/user", userRouter);
 app.use("/api", isdRouter);
+app.use("/api/user", pwdRouter);
 
 app.listen(PORT, () => {
   console.log("Server started on ", PORT);

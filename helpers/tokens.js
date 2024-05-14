@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const createAccessToken = (id) => {
-  const token = jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: 60 });
+  const token = jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: "24h" });
   return token;
 };
 
@@ -115,4 +115,34 @@ const decryptTokens = async (req, tokens) => {
   // }
 };
 
-module.exports = { generateTokens, createRefreshToken, decryptTokens };
+const decryptForgotToken = async (req, res, next) => {
+  const token = req.params.token;
+
+  const temp = jwt.verify(
+    token,
+    process.env.SECRET_KEY,
+    function (err, decoded) {
+      if (err) {
+        return { status: false, error: err.message };
+      } else {
+        return { status: true, id: decoded };
+      }
+    }
+  );
+
+  if (temp?.status) {
+    req.headers.userId = temp?.id?.id;
+
+    next();
+  } else {
+    return res.status(401).send(temp);
+  }
+};
+
+module.exports = {
+  generateTokens,
+  createRefreshToken,
+  createAccessToken,
+  decryptTokens,
+  decryptForgotToken,
+};

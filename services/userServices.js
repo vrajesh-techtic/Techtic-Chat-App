@@ -1,4 +1,4 @@
-const { verifyPassword } = require("../helpers/passwords");
+const { verifyPassword, createHashPassword } = require("../helpers/passwords");
 const { generateTokens } = require("../helpers/tokens");
 const savePic = require("../middleware/saveProfilePic");
 const { users } = require("../models/userModel");
@@ -24,7 +24,7 @@ const findUser = async (email) => {
   try {
     const findUser = await users.findOne({ email });
     if (findUser !== null) {
-      return { status: true, message: "User already exists!" };
+      return { status: true, message: "User already exists!", data: findUser };
     } else {
       return { status: false };
     }
@@ -135,10 +135,37 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const changePassword = async (res, id, pwd) => {
+  try {
+    const userData = await findUserById(id);
+    const validatePWD = await verifyPassword(pwd, userData?.password);
+    console.log("validatePWD", validatePWD);
+    if (validatePWD) {
+      return res.status(400).send({
+        status: false,
+        message: "New password must be different from Old password!",
+      });
+    } else {
+      console.log("New password");
+      const password = await createHashPassword(pwd);
+      console.log("password", password);
+      const updatePWDQuery = await users.findByIdAndUpdate(id, { password });
+      if (updatePWDQuery !== null) {
+        res
+          .status(200)
+          .send({ status: true, message: "Password Changed Successfully!" });
+      }
+    }
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
 module.exports = {
   registerNewUser,
   findUser,
   validateLogin,
   findUserById,
   updateProfile,
+  changePassword,
 };
