@@ -19,12 +19,11 @@ app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL, "http://127.0.0.1:5500"],
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   })
 );
-app.set('view engine', 'ejs')
-
+app.set("view engine", "ejs");
 
 app.use("/api/user", userRouter);
 app.use("/api", isdRouter);
