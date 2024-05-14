@@ -225,9 +225,9 @@ const onlyPWDValidations = (req, res, next) => {
 
 const resetPWDValidations = (req, res, next) => {
   const schema = joi.object({
-    password: joi
+    currPassword: joi
       .string()
-      .required("Enter your password")
+      .required("Enter current password")
       .min(8)
       .max(32)
       .custom((value, helpers) => {
@@ -246,12 +246,41 @@ const resetPWDValidations = (req, res, next) => {
         return value;
       }, "password validation")
       .messages({
-        "string.min": "Password must have minimum 8 characters",
-        "string.max": "Password must have maximum 32 characters",
-        lowercase: "Password must have atleast one lowercase character",
-        uppercase: "Password must have atleast one uppercase character",
-        number: "Password must have atleast one digit",
-        special: "Password must have atleast one special character",
+        "string.min": "Current password must have minimum 8 characters",
+        "string.max": "Current password must have maximum 32 characters",
+        "string.empty": "Current password cannot be empty!",
+        lowercase: "Current password must have atleast one lowercase character",
+        uppercase: "Current password must have atleast one uppercase character",
+        number: "Current password must have atleast one digit",
+        special: "Current password must have atleast one special character",
+      }),
+    password: joi
+      .string()
+      .required("Enter new password")
+      .min(8)
+      .max(32)
+      .custom((value, helpers) => {
+        if (!/[a-z]/.test(value)) {
+          return helpers.error("lowercase");
+        }
+        if (!/[A-Z]/.test(value)) {
+          return helpers.error("uppercase");
+        }
+        if (!/[0-9]/.test(value)) {
+          return helpers.error("number");
+        }
+        if (!/[^a-zA-Z0-9]/.test(value)) {
+          return helpers.error("special");
+        }
+        return value;
+      }, "password validation")
+      .messages({
+        "string.min": "New password must have minimum 8 characters",
+        "string.max": "New password must have maximum 32 characters",
+        lowercase: "New password must have atleast one lowercase character",
+        uppercase: "New password must have atleast one uppercase character",
+        number: "New password must have atleast one digit",
+        special: "New password must have atleast one special character",
       }),
 
     confirmPassword: joi

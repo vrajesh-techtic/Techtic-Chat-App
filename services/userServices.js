@@ -138,27 +138,33 @@ const updateProfile = async (req, res) => {
   }
 };
 
-const changePassword = async (res, id, pwd) => {
+const changePassword = async (res, id, pwd, currPWD) => {
   try {
     const userData = await users.findById(id);
 
-    const validatePWD = await verifyPassword(pwd, userData?.password);
+    if (await verifyPassword(currPWD, userData?.password)) {
+      const validatePWD = await verifyPassword(pwd, userData?.password);
 
-    if (validatePWD) {
-      return res.status(400).send({
-        status: false,
-        error: "New password must be different from Old password!",
-      });
-    } else {
-      const password = await createHashPassword(pwd);
+      if (validatePWD) {
+        return res.status(400).send({
+          status: false,
+          error: "New password must be different from Old password!",
+        });
+      } else {
+        const password = await createHashPassword(pwd);
 
-      const updatePWDQuery = await users.findByIdAndUpdate(id, { password });
-      if (updatePWDQuery !== null) {
-        const removeToken = await passwords.deleteOne({ userId: id });
-        res
-          .status(200)
-          .send({ status: true, message: "Password Changed Successfully!" });
+        const updatePWDQuery = await users.findByIdAndUpdate(id, { password });
+        if (updatePWDQuery !== null) {
+          const removeToken = await passwords.deleteOne({ userId: id });
+          res
+            .status(200)
+            .send({ status: true, message: "Password Changed Successfully!" });
+        }
       }
+    } else {
+      res
+        .status(401)
+        .send({ status: false, error: "Incorrect current password" });
     }
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });

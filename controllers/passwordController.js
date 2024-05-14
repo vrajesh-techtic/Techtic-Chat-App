@@ -46,7 +46,14 @@ const validateForgotPWD = async (req, res) => {
 };
 
 const resetPasswordController = async (req, res) => {
-  await changePassword(res, req.headers.userId, req.body.password);
+ 
+
+  await changePassword(
+    res,
+    req.headers.userId,
+    req.body.password,
+    req.body.currPassword
+  );
 };
 
 module.exports = { forgotPassword, validateForgotPWD, resetPasswordController };
