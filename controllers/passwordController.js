@@ -21,12 +21,14 @@ const forgotPassword = async (req, res) => {
       } else if (isToken?.error === "Invalid Attempt!") {
         const addToken = await passwords.create({ userId, token: newToken });
       }
-      const isMailSent = await sendEmail(req.body.email, newToken);
-      if (isMailSent?.status) {
-        return res.status(200).send(isMailSent);
-      } else {
-        return res.status(500).send(isMailSent);
-      }
+      sendEmail(req.body.email, newToken);
+
+      res
+        .status(200)
+        .send({
+          status: true,
+          message: "Reset password link sent to your email address!",
+        });
     } else {
       return res
         .status(401)
@@ -46,8 +48,6 @@ const validateForgotPWD = async (req, res) => {
 };
 
 const resetPasswordController = async (req, res) => {
- 
-
   await changePassword(
     res,
     req.headers.userId,
