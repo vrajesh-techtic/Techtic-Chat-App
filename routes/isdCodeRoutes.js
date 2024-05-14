@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.post("/addCountryCodes", addCountryCodes);
 router.get("/get-country-codes", getCountryCodes);
-// router.get("/get-country-codes", fetchCountryOneByOne);
+// router.post("/get-country-codes", fetchCountryOneByOne);
 
 module.exports = router;
