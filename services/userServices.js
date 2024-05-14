@@ -110,7 +110,7 @@ const updateProfile = async (req, res) => {
       if (pic.status) {
         req.body.profilePic = pic.url;
       } else {
-        res.status(500).send(pic);
+       return res.status(500).send(pic);
       }
     } else if (req.body.profilePic === "") {
       delete req.body?.profilePic;
@@ -124,13 +124,14 @@ const updateProfile = async (req, res) => {
     delete resp?.updatedAt;
 
     if (updateQuery) {
-      res.status(200).send({
+     return res.status(200).send({
         status: true,
         message: "Profile updated successfully!",
         data: resp,
       });
     }
   } catch (error) {
+    console.log('called');
     res.status(500).send({ status: false, message: error.message });
   }
 };

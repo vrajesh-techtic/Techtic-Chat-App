@@ -5,7 +5,7 @@ const { decryptTokens } = require("../helpers/tokens");
 const authenticate = async (req, res, next) => {
   try {
     const cookies = req.headers.cookie.split(";");
-
+    console.log("cookies :>> ", cookies);
     if (cookies.length === 1) {
       const tokenKey = cookies[0].split("=")[0].trim();
 
