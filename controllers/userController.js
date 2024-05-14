@@ -35,7 +35,7 @@ const updatePassword = async (req, res) => {
   const pwd = req.body.password;
   const id = req.headers.userId;
 
-  await changePassword(res,id, pwd);
+  await changePassword(res, id, pwd, "", "forgot");
 };
 
 module.exports = { createUser, loginUser, updateUser, updatePassword };

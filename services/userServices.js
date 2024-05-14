@@ -138,33 +138,48 @@ const updateProfile = async (req, res) => {
   }
 };
 
-const changePassword = async (res, id, pwd, currPWD) => {
+const pwdChange = async (res, id, pwd, userData) => {
+  const validatePWD = await verifyPassword(pwd, userData?.password);
+
+  if (validatePWD) {
+    return res.status(400).send({
+      status: false,
+      error: "New password must be different from Old password!",
+    });
+  } else {
+    const password = await createHashPassword(pwd);
+
+    const updatePWDQuery = await users.findByIdAndUpdate(id, { password });
+
+    if (updatePWDQuery !== null) {
+      const removeToken = await passwords.deleteOne({ userId: id });
+      res
+        .status(200)
+        .send({ status: true, message: "Password Changed Successfully!" });
+    }
+  }
+};
+
+const changePassword = async (res, id, pwd, currPWD, type) => {
   try {
     const userData = await users.findById(id);
+    let isReset = false;
 
-    if (await verifyPassword(currPWD, userData?.password)) {
-      const validatePWD = await verifyPassword(pwd, userData?.password);
+    if (type === "reset") {
+      isReset = true;
+    }
 
-      if (validatePWD) {
-        return res.status(400).send({
-          status: false,
-          error: "New password must be different from Old password!",
-        });
-      } else {
-        const password = await createHashPassword(pwd);
-
-        const updatePWDQuery = await users.findByIdAndUpdate(id, { password });
-        if (updatePWDQuery !== null) {
-          const removeToken = await passwords.deleteOne({ userId: id });
-          res
-            .status(200)
-            .send({ status: true, message: "Password Changed Successfully!" });
-        }
-      }
+    if (!isReset) {
+      await pwdChange(res, id, pwd, userData);
     } else {
-      res
-        .status(401)
-        .send({ status: false, error: "Incorrect current password" });
+      const verifyCurr = await verifyPassword(currPWD, userData?.password);
+      if (verifyCurr) {
+        await pwdChange(res, id, pwd, userData);
+      } else {
+        res
+          .status(401)
+          .send({ status: false, error: "Incorrect current password" });
+      }
     }
   } catch (error) {
     return res.status(500).send({ status: false, message: error.message });

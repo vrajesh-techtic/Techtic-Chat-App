@@ -23,12 +23,10 @@ const forgotPassword = async (req, res) => {
       }
       sendEmail(req.body.email, newToken);
 
-      res
-        .status(200)
-        .send({
-          status: true,
-          message: "Reset password link sent to your email address!",
-        });
+      res.status(200).send({
+        status: true,
+        message: "Reset password link sent to your email address!",
+      });
     } else {
       return res
         .status(401)
@@ -52,7 +50,8 @@ const resetPasswordController = async (req, res) => {
     res,
     req.headers.userId,
     req.body.password,
-    req.body.currPassword
+    req.body.currPassword,
+    "reset"
   );
 };
 

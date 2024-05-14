@@ -7,6 +7,7 @@ const env = require("dotenv").config();
 const userRouter = require("./routes/userRoutes");
 const isdRouter = require("./routes/isdCodeRoutes");
 const pwdRouter = require("./routes/passwordRoutes");
+const chatRouter = require("./routes/chatRoutes");
 
 const path = require("path");
 
@@ -24,9 +25,10 @@ app.use(
   })
 );
 app.set("view engine", "ejs");
-app.use("/api/user", userRouter);
 app.use("/api", isdRouter);
+app.use("/api/user", userRouter);
 app.use("/api/user", pwdRouter);
+app.use("/api/user/chat", chatRouter);
 
 app.listen(PORT, () => {
   console.log("Server started on ", PORT);
