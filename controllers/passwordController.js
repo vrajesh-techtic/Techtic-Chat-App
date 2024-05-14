@@ -1,4 +1,7 @@
 const { createAccessToken } = require("../helpers/tokens");
+const { passwords } = require("../models/passwordsModel");
+const { tokenExists } = require("../services/changePWD");
+const { sendEmail } = require("../services/email/emailService");
 const { findUser } = require("../services/userServices");
 const { updatePassword } = require("./userController");
 
@@ -8,11 +11,24 @@ const forgotPassword = async (req, res) => {
     const userId = isUser?.data?._id.valueOf();
     if (isUser?.status) {
       const newToken = createAccessToken(userId);
-      res
-        .status(200)
-        .send({ status: true, message: "Valid User!", token: newToken });
+      const isToken = await tokenExists(userId);
+
+      if (isToken?.status) {
+        const addNewToken = await passwords.findOneAndUpdate(
+          { userId },
+          { token: newToken }
+        );
+      } else if (isToken?.error === "Invalid Attempt!") {
+        const addToken = await passwords.create({ userId, token: newToken });
+      }
+      const isMailSent = await sendEmail(req.body.email, newToken);
+      if (isMailSent?.status) {
+        return res.status(200).send(isMailSent);
+      } else {
+        return res.status(500).send(isMailSent);
+      }
     } else {
-      res
+      return res
         .status(401)
         .send({ status: false, message: "Email address not registered!" });
     }

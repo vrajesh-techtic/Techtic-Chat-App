@@ -1,6 +1,8 @@
 const { verifyPassword, createHashPassword } = require("../helpers/passwords");
 const { generateTokens } = require("../helpers/tokens");
 const savePic = require("../middleware/saveProfilePic");
+const { findById } = require("../models/ISDModel");
+const { passwords } = require("../models/passwordsModel");
 const { users } = require("../models/userModel");
 const { ObjectId } = require("mongodb");
 
@@ -110,7 +112,7 @@ const updateProfile = async (req, res) => {
       if (pic.status) {
         req.body.profilePic = pic.url;
       } else {
-       return res.status(500).send(pic);
+        return res.status(500).send(pic);
       }
     } else if (req.body.profilePic === "") {
       delete req.body?.profilePic;
@@ -124,34 +126,35 @@ const updateProfile = async (req, res) => {
     delete resp?.updatedAt;
 
     if (updateQuery) {
-     return res.status(200).send({
+      return res.status(200).send({
         status: true,
         message: "Profile updated successfully!",
         data: resp,
       });
     }
   } catch (error) {
-    console.log('called');
+    console.log("called");
     res.status(500).send({ status: false, message: error.message });
   }
 };
 
 const changePassword = async (res, id, pwd) => {
   try {
-    const userData = await findUserById(id);
+    const userData = await users.findById(id);
+    console.log('userData', userData)
     const validatePWD = await verifyPassword(pwd, userData?.password);
     console.log("validatePWD", validatePWD);
     if (validatePWD) {
       return res.status(400).send({
         status: false,
-        message: "New password must be different from Old password!",
+        error: "New password must be different from Old password!",
       });
     } else {
-      console.log("New password");
       const password = await createHashPassword(pwd);
-      console.log("password", password);
+
       const updatePWDQuery = await users.findByIdAndUpdate(id, { password });
       if (updatePWDQuery !== null) {
+        const removeToken = await passwords.deleteOne({ userId: id });
         res
           .status(200)
           .send({ status: true, message: "Password Changed Successfully!" });

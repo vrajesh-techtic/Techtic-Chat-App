@@ -11,13 +11,21 @@ const { decryptForgotToken } = require("../helpers/tokens");
 
 const router = express.Router();
 
-router.post("/forgot-password", forgotPWDValidations, forgotPassword);
+router.post(
+  "/send-forgot-password-email",
+  forgotPWDValidations,
+  forgotPassword
+);
 router.post(
   "/validate-forgot-password/:token",
   decryptForgotToken,
   onlyPWDValidations,
-  //   forgotPWDValidations,
   validateForgotPWD
 );
+
+router.get("/forgot-password/:token", (req, res) => {
+  const token = req.params.token;
+  res.render("../services/email/email", { token });
+});
 
 module.exports = router;

@@ -207,16 +207,17 @@ const onlyPWDValidations = (req, res, next) => {
       .messages({
         "string.min": "Password must have minimum 8 characters",
         "string.max": "Password must have maximum 32 characters",
+        "string.empty": "Password must not be empty",
         lowercase: "Password must have atleast one lowercase character",
         uppercase: "Password must have atleast one uppercase character",
         number: "Password must have atleast one digit",
         special: "Password must have atleast one special character",
       }),
   });
-
+  console.log("req.body", req.body);
   const errors = schema.validate(req.body);
   if (errors.error) {
-    res.status(404).send({ status: false, error: errors.error.message });
+    res.status(400).send({ status: false, error: errors.error.message });
   } else {
     next();
   }

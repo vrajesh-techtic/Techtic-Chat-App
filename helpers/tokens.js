@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { tokenExists } = require("../services/changePWD");
 
 const createAccessToken = (id) => {
   const token = jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: "24h" });
@@ -133,7 +134,13 @@ const decryptForgotToken = async (req, res, next) => {
   if (temp?.status) {
     req.headers.userId = temp?.id?.id;
 
-    next();
+    const isToken = await tokenExists(temp?.id?.id);
+
+    if (isToken?.status) {
+      next();
+    } else {
+      res.status(500).send(isToken);
+    }
   } else {
     return res.status(401).send(temp);
   }
