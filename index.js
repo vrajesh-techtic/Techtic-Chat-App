@@ -24,7 +24,6 @@ app.use(
   })
 );
 app.set("view engine", "ejs");
-
 app.use("/api/user", userRouter);
 app.use("/api", isdRouter);
 app.use("/api/user", pwdRouter);

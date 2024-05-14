@@ -2,7 +2,7 @@ const { createAccessToken } = require("../helpers/tokens");
 const { passwords } = require("../models/passwordsModel");
 const { tokenExists } = require("../services/changePWD");
 const { sendEmail } = require("../services/email/emailService");
-const { findUser } = require("../services/userServices");
+const { findUser, changePassword } = require("../services/userServices");
 const { updatePassword } = require("./userController");
 
 const forgotPassword = async (req, res) => {
@@ -45,4 +45,8 @@ const validateForgotPWD = async (req, res) => {
   }
 };
 
-module.exports = { forgotPassword, validateForgotPWD };
+const resetPasswordController = async (req, res) => {
+  await changePassword(res, req.headers.userId, req.body.password);
+};
+
+module.exports = { forgotPassword, validateForgotPWD, resetPasswordController };

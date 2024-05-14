@@ -141,9 +141,9 @@ const updateProfile = async (req, res) => {
 const changePassword = async (res, id, pwd) => {
   try {
     const userData = await users.findById(id);
-    console.log('userData', userData)
+
     const validatePWD = await verifyPassword(pwd, userData?.password);
-    console.log("validatePWD", validatePWD);
+
     if (validatePWD) {
       return res.status(400).send({
         status: false,

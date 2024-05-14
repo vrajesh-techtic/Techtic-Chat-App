@@ -214,10 +214,60 @@ const onlyPWDValidations = (req, res, next) => {
         special: "Password must have atleast one special character",
       }),
   });
-  console.log("req.body", req.body);
+
   const errors = schema.validate(req.body);
   if (errors.error) {
     res.status(400).send({ status: false, error: errors.error.message });
+  } else {
+    next();
+  }
+};
+
+const resetPWDValidations = (req, res, next) => {
+  const schema = joi.object({
+    password: joi
+      .string()
+      .required("Enter your password")
+      .min(8)
+      .max(32)
+      .custom((value, helpers) => {
+        if (!/[a-z]/.test(value)) {
+          return helpers.error("lowercase");
+        }
+        if (!/[A-Z]/.test(value)) {
+          return helpers.error("uppercase");
+        }
+        if (!/[0-9]/.test(value)) {
+          return helpers.error("number");
+        }
+        if (!/[^a-zA-Z0-9]/.test(value)) {
+          return helpers.error("special");
+        }
+        return value;
+      }, "password validation")
+      .messages({
+        "string.min": "Password must have minimum 8 characters",
+        "string.max": "Password must have maximum 32 characters",
+        lowercase: "Password must have atleast one lowercase character",
+        uppercase: "Password must have atleast one uppercase character",
+        number: "Password must have atleast one digit",
+        special: "Password must have atleast one special character",
+      }),
+
+    confirmPassword: joi
+      .string()
+      .required()
+      .custom((value, helpers) => {
+        if (value !== req.body.password) {
+          return helpers.error("notSame");
+        }
+      }, "confirm password")
+      .messages({ notSame: "Both passwords must be same!" }),
+  });
+
+  const errors = schema.validate(req.body);
+  if (errors.error) {
+    res.status(404).send({ status: false, error: errors.error.message });
   } else {
     next();
   }
@@ -229,4 +279,5 @@ module.exports = {
   updateValidations,
   forgotPWDValidations,
   onlyPWDValidations,
+  resetPWDValidations,
 };
