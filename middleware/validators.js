@@ -325,7 +325,7 @@ const usernameValidations = (req, res, next) => {
 };
 
 module.exports = {
-  signUpValidation,
+  signUpValidation,    
   loginValidations,
   updateValidations,
   forgotPWDValidations,
