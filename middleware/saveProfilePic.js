@@ -20,6 +20,7 @@ const savePic = async (file) => {
     return {
       status: true,
       url: `${process.env.BACKEND_URL}/uploads/profile-images/${fileName}`,
+      fileName,
     };
   } catch (error) {
     return { status: false, error: error.message };

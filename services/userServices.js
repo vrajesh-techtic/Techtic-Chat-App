@@ -39,7 +39,8 @@ const registerNewUser = async (req, res) => {
   try {
     const pic = await savePic(req.file);
     if (pic.status) {
-      req.body.profilePic = pic.url;
+      req.body.profilePic = pic.fileName;
+
       let createQuery = await users.create(req.body);
 
       if (createQuery) {
@@ -56,10 +57,13 @@ const registerNewUser = async (req, res) => {
         delete createQuery?.updatedAt;
         delete createQuery?.createdAt;
 
+        let resp = createQuery;
+        resp.profilePic = pic.url;
+
         res.status(200).send({
           status: true,
           message: "User added successfully!",
-          data: createQuery,
+          data: resp,
         });
       } else {
         res.status(500).send(pic);
@@ -89,10 +93,13 @@ const validateLogin = async (req, res) => {
       loginQuery = loginQuery.toObject();
       delete loginQuery?.password;
       delete loginQuery?._id;
+
+      const resp = loginQuery;
+      resp.profilePic = `${process.env.BACKEND_URL}/uploads/profile-images/${loginQuery?.profilePic}`;
       res.status(200).send({
         status: true,
         message: "Login Successfully",
-        data: loginQuery,
+        data: resp,
       });
     } else {
       res.status(401).send({ status: false, message: "Invalid Password!" });
@@ -104,13 +111,15 @@ const validateLogin = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   const userId = req.headers.userId;
+  let picURL = "";
 
   try {
     if (req.file) {
       const pic = await savePic(req.file);
-      // console.log("pic", pic);
+
       if (pic.status) {
-        req.body.profilePic = pic.url;
+        req.body.profilePic = pic.fileName;
+        picURL = pic.url;
       } else {
         return res.status(500).send(pic);
       }
@@ -119,11 +128,13 @@ const updateProfile = async (req, res) => {
     }
 
     let updateQuery = await users.findByIdAndUpdate(userId, req.body);
-    // console.log("updateQuery", updateQuery);
+
     const resp = (await findUserById(userId)).data.toObject();
     delete resp?._id;
     delete resp?.createdAt;
     delete resp?.updatedAt;
+
+    resp.profilePic = picURL;
 
     if (updateQuery) {
       return res.status(200).send({
