@@ -28,7 +28,7 @@ router.get("/", (req, res) => {
   res.send("API working !!");
 });
 
-router.get("/find-username", compareUsername);
+router.post("/find-username", compareUsername);
 
 router.post("/get-tokens", async (req, res) => {
   const userId = req.body.userId;

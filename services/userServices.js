@@ -1,6 +1,6 @@
 const { verifyPassword, createHashPassword } = require("../helpers/passwords");
 const { generateTokens } = require("../helpers/tokens");
-const savePic = require("../middleware/saveProfilePic");
+const { savePic, deletePic } = require("../middleware/saveProfilePic");
 const { findById } = require("../models/ISDModel");
 const { passwords } = require("../models/passwordsModel");
 const { users } = require("../models/userModel");
@@ -128,6 +128,12 @@ const updateProfile = async (req, res) => {
     }
 
     let updateQuery = await users.findByIdAndUpdate(userId, req.body);
+
+    const deleteOldPic = await deletePic(updateQuery?.profilePic);
+
+    if (!deleteOldPic?.status) {
+      return res.status(500).send(deleteOldPic);
+    }
 
     const resp = (await findUserById(userId)).data.toObject();
     delete resp?._id;

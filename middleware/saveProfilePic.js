@@ -29,4 +29,17 @@ const savePic = async (file, username) => {
   }
 };
 
-module.exports = savePic;
+const deletePic = async (fileName) => {
+  const uploadPath = path.join(__dirname, "..", "uploads", "profile-images");
+
+  const fileLocation = path.join(uploadPath, fileName);
+
+  try {
+    fs.unlinkSync(fileLocation);
+    return { status: true, message: "Old Profile Pic removed!" };
+  } catch (error) {
+    return { status: false, error: error.message };
+  }
+};
+
+module.exports = { savePic, deletePic };
