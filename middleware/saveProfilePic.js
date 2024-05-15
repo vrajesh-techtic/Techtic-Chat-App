@@ -2,11 +2,13 @@ const fs = require("fs");
 const path = require("path");
 
 const savePic = async (file) => {
+  console.log("file", file);
   try {
     if (!file) {
       return {
         status: true,
-        url: `${process.env.BACKEND_URL}/uploads/defaultProfilePic.png`,
+        url: `${process.env.BACKEND_URL}/uploads/profile-images/defaultProfilePic.png`,
+        fileName: "defaultProfilePic.png",
       };
     }
     const uploadPath = path.join(__dirname, "..", "uploads", "profile-images");
