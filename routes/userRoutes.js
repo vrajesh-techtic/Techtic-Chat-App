@@ -18,6 +18,7 @@ const {
   decryptTokens,
   generateTokens,
 } = require("../helpers/tokens");
+const { compareUsername } = require("../services/userServices");
 
 const storage = multer.memoryStorage();
 
@@ -26,6 +27,8 @@ const upload = multer({ storage });
 router.get("/", (req, res) => {
   res.send("API working !!");
 });
+
+router.get("/find-username", compareUsername);
 
 router.post("/get-tokens", async (req, res) => {
   const userId = req.body.userId;

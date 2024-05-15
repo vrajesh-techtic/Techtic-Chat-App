@@ -37,7 +37,7 @@ const findUser = async (email) => {
 
 const registerNewUser = async (req, res) => {
   try {
-    const pic = await savePic(req.file);
+    const pic = await savePic(req.file, req.body.username);
     if (pic.status) {
       req.body.profilePic = pic.fileName;
 
@@ -115,7 +115,7 @@ const updateProfile = async (req, res) => {
 
   try {
     if (req.file) {
-      const pic = await savePic(req.file);
+      const pic = await savePic(req.file, req.body.username);
 
       if (pic.status) {
         req.body.profilePic = pic.fileName;
@@ -197,6 +197,28 @@ const changePassword = async (res, id, pwd, currPWD, type) => {
   }
 };
 
+const compareUsername = async (req, res) => {
+  const username = req.body.username;
+  try {
+    if (!username) {
+      return res
+        .status(404)
+        .send({ status: false, error: "Please enter username" });
+    }
+    const isusernameExist = await users.findOne({ username });
+
+    if (isusernameExist !== null) {
+      return res
+        .status(404)
+        .send({ status: false, error: "Username already exists!" });
+    } else {
+      res.status(200).send({ status: true, message: "Username available!" });
+    }
+  } catch (error) {
+    return res.status(500).send({ status: false, message: error.message });
+  }
+};
+
 module.exports = {
   registerNewUser,
   findUser,
@@ -204,4 +226,5 @@ module.exports = {
   findUserById,
   updateProfile,
   changePassword,
+  compareUsername,
 };

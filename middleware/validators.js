@@ -8,6 +8,7 @@ const signUpValidation = (req, res, next) => {
     }),
     username: joi.string().alphanum().min(4).max(20).required().messages({
       "string.pattern.base": "Username must be alphanumeric only! ",
+      "string.alphanum": "Username must have only alphanumeric characters!",
       "string.min": "Username should be of minimum 4 characters",
       "string.max": "Username should be of maximum 20 characters only",
     }),

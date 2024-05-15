@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const savePic = async (file) => {
+const savePic = async (file, username) => {
   console.log("file", file);
   try {
     if (!file) {
@@ -13,7 +13,7 @@ const savePic = async (file) => {
     }
     const uploadPath = path.join(__dirname, "..", "uploads", "profile-images");
 
-    const fileName = `${Date.now()}_${file.originalname}`;
+    const fileName = `${Date.now()}_${username}.png`;
 
     const fileLocation = path.join(uploadPath, fileName);
 
