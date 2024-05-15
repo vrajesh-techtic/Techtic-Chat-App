@@ -8,6 +8,7 @@ const {
   signUpValidation,
   loginValidations,
   updateValidations,
+  usernameValidations,
 } = require("../middleware/validators");
 const { authenticate } = require("../middleware/authentication");
 
@@ -28,7 +29,7 @@ router.get("/", (req, res) => {
   res.send("API working !!");
 });
 
-router.post("/find-username", compareUsername);
+router.post("/find-username", usernameValidations, compareUsername);
 
 router.post("/get-tokens", async (req, res) => {
   const userId = req.body.userId;

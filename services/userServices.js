@@ -206,11 +206,6 @@ const changePassword = async (res, id, pwd, currPWD, type) => {
 const compareUsername = async (req, res) => {
   const username = req.body.username;
   try {
-    if (!username) {
-      return res
-        .status(404)
-        .send({ status: false, error: "Please enter username" });
-    }
     const isusernameExist = await users.findOne({ username });
 
     if (isusernameExist !== null) {
